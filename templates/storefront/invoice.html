@@ -1,3 +1,60 @@
 {% extends 'base.html' %}
+{% load storefront_extras %}
 {% block title %}Invoice {{ booking.code }}{% endblock %}
-{% block content %}<div class="shell page-top"><h1>Invoice {{ booking.code }}</h1><p>{{ booking.product_name }}</p></div>{% endblock %}
+{% block content %}
+<div class="shell page-top">
+  <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="{% url 'booking_list' %}">Perjalanan saya</a><span aria-hidden="true">/</span><span>Invoice {{ booking.code }}</span></nav>
+  <ol class="progress-tracker" aria-label="Tahap pemesanan"><li class="step-done"><span>1</span>Detail pesanan</li><li aria-current="step"><span>2</span>Invoice</li><li><span>3</span>Pembayaran</li></ol>
+  <div class="invoice-heading">
+    <div><span class="eyebrow">Invoice {{ booking.invoice_number }}</span><h1>{{ booking.product_name }}</h1><p>{{ booking.start_at|date:'j F Y' }} · {{ booking.guest_no }} tamu</p></div>
+    <span class="status-pill status-large {% if booking.is_fully_paid %}status-paid{% else %}status-pending{% endif %}">{% if booking.is_fully_paid %}Lunas{% else %}Belum lunas{% endif %}</span>
+  </div>
+  <div class="invoice-grid">
+    <div class="invoice-main">
+      <section class="invoice-card" aria-labelledby="terms-title">
+        <div class="card-heading"><h2 id="terms-title">Rincian pembayaran</h2><span>Kode booking: <strong>{{ booking.code }}</strong></span></div>
+        <ol class="term-list">
+          {% for term in booking.terms %}
+            <li class="term-item {% if term.paid %}term-paid{% endif %}">
+              <div class="term-number">{{ term.number }}</div>
+              <div><strong>{% if forloop.first %}{% if booking.season_id %}PO / DP{% else %}DP{% endif %}{% else %}Pelunasan{% endif %}</strong><span>Termin {{ term.number }} dari {{ booking.terms|length }}</span></div>
+              <strong>{{ term.amount|idr }}</strong>
+              <span class="term-status">{% if term.paid %}Dibayar{% else %}Belum dibayar{% endif %}</span>
+            </li>
+          {% endfor %}
+        </ol>
+      </section>
+      {% if not booking.is_fully_paid %}
+        <section class="invoice-card payment-card" aria-labelledby="method-title">
+          <h2 id="method-title">Bayar termin berikutnya</h2>
+          {% if pending_intent %}
+            <p>Virtual Account untuk termin ini sudah dibuat. Lanjutkan dari halaman pembayaran yang sama.</p>
+            <a class="button button-primary" href="{% url 'payment_pending' pending_intent.id %}">Lanjutkan pembayaran {{ pending_intent.total_amount|idr }}</a>
+          {% else %}
+            <form action="{% url 'payment_intent_create' booking.id %}" method="post" data-prevent-double-submit>
+              {% csrf_token %}
+              <input type="hidden" name="installment_number" value="{{ next_term.number }}">
+              <input type="hidden" name="operation_id" value="{{ operation_id }}">
+              <fieldset class="payment-option"><legend>Pilih metode pembayaran</legend><label for="option-va"><input id="option-va" type="radio" name="option_id" value="9001" checked><span><strong>Virtual Account</strong><small>Simulator bank demo · biaya Rp4.000 termasuk PPN</small></span></label></fieldset>
+              <dl class="pay-summary"><div><dt>Termin {{ next_term.number }}</dt><dd>{{ next_term.amount|idr }}</dd></div><div><dt>Biaya layanan (termasuk PPN)</dt><dd>Rp4.000</dd></div><div class="pay-total"><dt>Total dibayar sekarang</dt><dd>{{ next_total|idr }}</dd></div></dl>
+              <button class="button button-primary button-block" type="submit">Bayar {{ next_total|idr }}</button>
+            </form>
+          {% endif %}
+          <p class="payment-note">Intent <code>accepted</code> atau <code>action_required</code> belum berarti pembayaran berhasil.</p>
+        </section>
+      {% else %}
+        <div class="success-panel" role="status"><strong>Pembayaran telah lunas</strong><p>Seluruh termin produk sudah dibayar melalui simulator. Tidak ada transaksi nyata yang terjadi.</p></div>
+      {% endif %}
+    </div>
+    <aside class="summary-card invoice-summary" aria-labelledby="amount-title">
+      <h2 id="amount-title">Ringkasan jumlah</h2>
+      <dl class="summary-list"><div><dt>Harga produk</dt><dd>{{ booking.total_price|idr }}</dd></div><div><dt>Produk terbayar</dt><dd>{{ booking.paid_product_amount|idr }}</dd></div><div><dt>Sisa produk</dt><dd>{{ booking.remaining_product_amount|idr }}</dd></div><div><dt>Biaya terbayar</dt><dd>{{ paid_fee_amount|idr }}</dd></div></dl>
+      <p class="summary-note">Harga produk tidak dicampur dengan biaya layanan. Sisa produk + produk terbayar = harga produk.</p>
+      <form action="{% url 'payment_status' booking.id %}" method="post">
+        {% csrf_token %}<button class="button button-outline button-block" type="submit">Periksa status terbaru</button>
+      </form>
+      {% if booking.last_status_check %}<small class="last-check">Terakhir diperiksa:<br>{{ booking.last_status_check|date:'j M Y, H:i' }} WITA</small>{% endif %}
+    </aside>
+  </div>
+</div>
+{% endblock %}

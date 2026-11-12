@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load storefront_extras %}
+{% block title %}Pembayaran {{ intent.booking.code }}{% endblock %}
+{% block content %}
+<div class="shell narrow-page">
+  <section class="payment-instructions" aria-labelledby="payment-title">
+    <span class="status-pill status-pending">Menunggu pembayaran</span>
+    <h1 id="payment-title">Selesaikan pembayaran Virtual Account</h1>
+    <p>Booking <strong>{{ intent.booking.code }}</strong> · Termin {{ intent.installment_number }}</p>
+    <div class="va-panel"><span>Nomor Virtual Account demo</span><strong>{{ intent.va_code }}</strong><small>Gunakan hanya di simulator provider. Nomor ini tidak dapat menerima uang.</small></div>
+    <dl class="pay-summary"><div><dt>Nilai termin</dt><dd>{{ intent.amount|idr }}</dd></div><div><dt>Biaya layanan (termasuk PPN)</dt><dd>{{ intent.fee|idr }}</dd></div><div class="pay-total"><dt>Total transfer</dt><dd>{{ intent.total_amount|idr }}</dd></div></dl>
+    <div class="warning-panel"><strong>Belum terbukti lunas</strong><p>Status intent adalah <code>{{ intent.status }}</code>. Pembayaran baru berubah setelah simulator provider mencatat settlement dan status dibaca kembali.</p></div>
+    <a class="button button-primary button-block" href="{% url 'demo_payment_provider' intent.id %}">Buka simulator provider</a>
+    <a class="text-link" href="{% url 'payment_return' intent.id %}">Saya sudah membayar — kembali ke invoice</a>
+  </section>
+</div>
+{% endblock %}

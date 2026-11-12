@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load storefront_extras %}
+{% block title %}Simulator provider{% endblock %}
+{% block content %}
+<div class="shell narrow-page">
+  <section class="provider-card" aria-labelledby="provider-title">
+    <span class="eyebrow">Simulator provider · bukan halaman Mitra</span>
+    <h1 id="provider-title">Simulasikan notifikasi pembayaran</h1>
+    <p>Halaman ini menggantikan settlement terverifikasi dari provider untuk keperluan POC. Tidak ada uang yang berpindah.</p>
+    <dl class="summary-list"><div><dt>Booking</dt><dd>{{ intent.booking.code }}</dd></div><div><dt>Virtual Account</dt><dd>{{ intent.va_code }}</dd></div><div><dt>Jumlah</dt><dd>{{ intent.total_amount|idr }}</dd></div></dl>
+    <form action="{% url 'demo_payment_settle' intent.id %}" method="post">
+      {% csrf_token %}<button class="button button-primary button-block" type="submit">Simulasikan pembayaran berhasil</button>
+    </form>
+    <a class="text-link" href="{% url 'payment_pending' intent.id %}">Kembali ke instruksi pembayaran</a>
+  </section>
+</div>
+{% endblock %}
