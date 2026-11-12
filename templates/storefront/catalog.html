@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static storefront_extras %}
+{% block title %}Paket wisata{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="shell hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow">Dibuat untuk cerita yang tinggal lebih lama</span>
+      <h1>Jelajahi Indonesia,<br><em>dengan lebih bermakna.</em></h1>
+      <p>Perjalanan kelompok kecil yang mempertemukan Anda dengan alam, budaya, dan orang-orang yang membuat setiap tempat istimewa.</p>
+      <div class="hero-actions">
+        <a class="button button-primary" href="#packages">Lihat paket perjalanan</a>
+        <a class="text-link" href="#how-it-works">Cara pemesanan <span aria-hidden="true">→</span></a>
+      </div>
+      <ul class="trust-list" role="list">
+        <li>Pemandu lokal</li>
+        <li>Kelompok kecil</li>
+        <li>Pembayaran bertahap</li>
+      </ul>
+    </div>
+    <div class="hero-visual" aria-label="Ilustrasi lanskap perjalanan Indonesia" role="img">
+      <svg viewBox="0 0 620 480" aria-hidden="true">
+        <defs>
+          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#DDF4F1"/><stop offset="1" stop-color="#F7F2E8"/></linearGradient>
+          <linearGradient id="sea" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#159A9C"/><stop offset="1" stop-color="#0D6E84"/></linearGradient>
+        </defs>
+        <rect width="620" height="480" rx="32" fill="url(#sky)"/>
+        <circle cx="466" cy="104" r="48" fill="#F3B85B"/>
+        <path d="M0 284 134 128l85 104 74-82 151 156H0Z" fill="#3B776D" opacity=".85"/>
+        <path d="m0 300 164-110 82 82 80-54 158 116H0Z" fill="#205B55"/>
+        <path d="M0 298c138-30 216 52 340 20 114-30 188-12 280 18v144H0Z" fill="url(#sea)"/>
+        <path d="M0 376c114-28 178 24 286 6 138-23 218-14 334 26v78H0Z" fill="#E9D8AF"/>
+        <path d="m362 328 74 0-20 14h-38Z" fill="#F8F4E9"/>
+        <path d="M397 326v-66l42 60Z" fill="#F8F4E9"/>
+        <path d="M393 266v58h-38Z" fill="#E4A854"/>
+        <g fill="#183E3A"><path d="m94 373 8-75 8 75Z"/><path d="M102 310c-38-8-42-30-42-30 28 0 42 12 42 12-2-32 20-44 20-44 8 26 0 48 0 48 24-18 46-10 46-10-16 24-46 30-46 30Z"/></g>
+      </svg>
+      <div class="hero-note"><strong>4 destinasi pilihan</strong><span>Reguler &amp; keberangkatan musiman</span></div>
+    </div>
+  </div>
+</section>
+<section class="section shell" id="packages" aria-labelledby="packages-title">
+  <div class="section-heading">
+    <div><span class="eyebrow">Pilihan perjalanan</span><h2 id="packages-title">Temukan perjalanan Anda</h2></div>
+    <p>Harga transparan per orang. Tanpa biaya tersembunyi.</p>
+  </div>
+  <div class="package-grid">
+    {% for product in products %}
+      <article class="package-card">
+        <a href="{% url 'product_detail' product.id %}" class="card-media" aria-label="Lihat {{ product.name }}">
+          <img src="{% static product.image %}" alt="Ilustrasi {{ product.location }}" width="640" height="420">
+          <span class="location-pill">{{ product.location }}</span>
+          {% if product.is_seasonal %}<span class="season-pill">Jadwal musiman</span>{% endif %}
+        </a>
+        <div class="card-content">
+          <div class="category-row">{% for category in product.categories %}<span>{{ category }}</span>{% endfor %}</div>
+          <h3><a href="{% url 'product_detail' product.id %}">{{ product.name }}</a></h3>
+          <p class="duration">{{ product.duration }} <span aria-hidden="true">·</span> Maks. {{ product.capacity }} tamu</p>
+          <div class="card-price"><span>Mulai dari</span><strong>{{ product.price|idr }}</strong><span>/ orang</span></div>
+          <a class="card-action" href="{% url 'product_detail' product.id %}">Lihat detail <span aria-hidden="true">→</span></a>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+</section>
+<section class="section section-tinted" id="how-it-works" aria-labelledby="steps-title">
+  <div class="shell">
+    <div class="section-heading"><div><span class="eyebrow">Mudah sejak awal</span><h2 id="steps-title">Dari pilihan menjadi perjalanan</h2></div></div>
+    <ol class="journey-steps">
+      <li><span>01</span><h3>Pilih perjalanan</h3><p>Bandingkan paket reguler atau pilih tanggal keberangkatan musiman.</p></li>
+      <li><span>02</span><h3>Pesan dengan aman</h3><p>Masuk melalui simulasi traveller, lalu periksa ringkasan pesanan.</p></li>
+      <li><span>03</span><h3>Bayar bertahap</h3><p>Mulai dari DP, pantau invoice, dan pulihkan status pembayaran.</p></li>
+    </ol>
+  </div>
+</section>
+{% endblock %}

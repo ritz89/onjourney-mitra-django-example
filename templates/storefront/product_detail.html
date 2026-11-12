@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static storefront_extras %}
+{% block title %}{{ product.name }}{% endblock %}
+{% block content %}
+<div class="shell page-top">
+  <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="{% url 'catalog' %}">Paket wisata</a><span aria-hidden="true">/</span><span>{{ product.name }}</span></nav>
+  <div class="detail-grid">
+    <div class="detail-main">
+      <img class="detail-image" src="{% static product.image %}" alt="Ilustrasi {{ product.location }}" width="960" height="580">
+      <div class="detail-heading">
+        <div class="category-row">{% for category in product.categories %}<span>{{ category }}</span>{% endfor %}</div>
+        <h1>{{ product.name }}</h1>
+        <p>{{ product.location }} <span aria-hidden="true">·</span> {{ product.duration }}</p>
+      </div>
+      <section class="detail-section" aria-labelledby="about-title"><h2 id="about-title">Tentang perjalanan</h2><p>{{ product.description }}</p></section>
+      <section class="detail-section" aria-labelledby="facilities-title">
+        <h2 id="facilities-title">Yang termasuk</h2>
+        <ul class="facility-list" role="list">
+          {% if product.facilities.hotel %}<li>Akomodasi</li>{% endif %}
+          {% if product.facilities.meals %}<li>Makan sesuai program</li>{% endif %}
+          {% if product.facilities.tickets %}<li>Tiket destinasi</li>{% endif %}
+          <li>Transportasi: {{ product.facilities.transport }}</li>
+        </ul>
+      </section>
+      {% if product.is_seasonal %}
+        <section class="detail-section" aria-labelledby="departures-title">
+          <h2 id="departures-title">Jadwal keberangkatan</h2>
+          <div class="departure-list">
+            {% for departure in departures %}
+              <article class="departure-item">
+                <div><strong>{{ departure.tour_date|date:'j F Y' }}</strong><span>{{ departure.remaining }} kursi tersisa dari {{ departure.capacity }}</span></div>
+                <dl><div><dt>Batas PO</dt><dd>{{ departure.po_deadline|date:'j F Y' }}</dd></div><div><dt>Batas pelunasan</dt><dd>{{ departure.payment_completion_deadline|date:'j F Y' }}</dd></div></dl>
+              </article>
+            {% endfor %}
+          </div>
+        </section>
+      {% endif %}
+    </div>
+    <aside class="booking-card" aria-labelledby="booking-card-title">
+      <span class="eyebrow">Mulai dari</span>
+      <div class="booking-price">{{ product.price|idr }} <small>/ orang</small></div>
+      <p id="booking-card-title">Rencanakan perjalanan Anda bersama {{ tenant.company_name }}.</p>
+      <ul class="check-list" role="list"><li>Harga produk terlihat jelas</li><li>DP dibayar sebelum pelunasan</li><li>Status invoice dapat diperiksa kembali</li></ul>
+      <a class="button button-primary button-block" href="{% url 'booking_create' product.id %}">Pesan paket ini</a>
+      <small class="booking-disclaimer">Ini adalah simulasi. Tidak ada tagihan nyata yang dibuat.</small>
+    </aside>
+  </div>
+</div>
+{% endblock %}

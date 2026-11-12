@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Masuk demo{% endblock %}
+{% block content %}
+<div class="shell narrow-page">
+  <section class="auth-card" aria-labelledby="login-title">
+    <span class="eyebrow">Simulasi identitas traveller</span>
+    <h1 id="login-title">Masuk sebagai Wisatawan Demo</h1>
+    <p>Pada integrasi nyata, tombol ini mengarah ke hosted authorization OnJourney dengan OIDC dan PKCE. POC tidak meminta kata sandi dan tidak membuat token.</p>
+    <div class="demo-identity"><strong>Wisatawan Demo</strong><span>Subject: demo-traveller-1</span></div>
+    <form action="{% url 'demo_login' %}" method="post">
+      {% csrf_token %}<input type="hidden" name="next" value="{{ next_url }}">
+      <button class="button button-primary button-block" type="submit">Lanjutkan sebagai Wisatawan Demo</button>
+    </form>
+    <a class="text-link" href="{% url 'catalog' %}">Kembali ke katalog</a>
+  </section>
+</div>
+{% endblock %}

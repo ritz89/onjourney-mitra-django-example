@@ -1,0 +1,67 @@
+{% load static %}
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="{% block meta_description %}Perjalanan pilihan bersama {{ tenant.company_name }}.{% endblock %}">
+  <title>{% block title %}Beranda{% endblock %} | {{ tenant.company_name }}</title>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  <script src="{% static 'js/app.js' %}" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">Lewati ke konten utama</a>
+  <div class="demo-banner" role="note">
+    <strong>MODE DEMO</strong>
+    <span>Data sintetis. Tidak ada transaksi uang nyata atau panggilan ke OnJourney.</span>
+  </div>
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="{% url 'catalog' %}" aria-label="Beranda {{ tenant.company_name }}">
+        <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true">
+          <path d="M5 29 16 10l6 10 4-6 9 15H5Z" fill="currentColor" opacity=".22"/>
+          <path d="m5 29 11-19 6 10 4-6 9 15H5Z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/>
+          <path d="M8 33h24" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+        </svg>
+        <span><strong>{{ tenant.company_name }}</strong><small>Travel with meaning</small></span>
+      </a>
+      <nav aria-label="Navigasi utama">
+        <ul class="nav-list" role="list">
+          <li><a href="{% url 'catalog' %}#packages">Paket wisata</a></li>
+          {% if demo_user %}
+            <li><a href="{% url 'booking_list' %}">Perjalanan saya</a></li>
+            <li>
+              <form action="{% url 'demo_logout' %}" method="post" class="inline-form">
+                {% csrf_token %}
+                <button type="submit" class="button button-ghost button-small">Keluar</button>
+              </form>
+            </li>
+          {% else %}
+            <li><a class="button button-outline button-small" href="{% url 'demo_login' %}">Masuk demo</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main id="content" tabindex="-1">
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="site-footer">
+    <div class="shell footer-grid">
+      <div>
+        <a class="brand brand-footer" href="{% url 'catalog' %}">{{ tenant.company_name }}</a>
+        <p>{{ tenant.tagline }}</p>
+      </div>
+      <div>
+        <strong>Hubungi kami</strong>
+        <p>{{ tenant.email }}<br>{{ tenant.address }}</p>
+      </div>
+      <div>
+        <strong>Tentang demo</strong>
+        <p>Contoh web milik Mitra yang memakai kontrak External Tenant API OnJourney.</p>
+      </div>
+    </div>
+    <div class="shell footer-bottom">POC sintetis — bukan situs pemesanan produksi.</div>
+  </footer>
+</body>
+</html>

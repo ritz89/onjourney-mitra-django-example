@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load storefront_extras %}
+{% block title %}Perjalanan saya{% endblock %}
+{% block content %}
+<div class="shell page-top">
+  <span class="eyebrow">Akun demo</span><h1>Perjalanan saya</h1>
+  <p class="page-intro">Daftar ini hanya booking yang dibuat oleh traveller demo pada instalasi ini, bukan seluruh riwayat OnJourney Anda.</p>
+  {% if bookings %}<div class="history-list">{% for booking in bookings %}
+    <article class="history-card"><div><span class="status-pill {% if booking.is_fully_paid %}status-paid{% else %}status-pending{% endif %}">{% if booking.is_fully_paid %}Lunas{% else %}Menunggu pembayaran{% endif %}</span><h2>{{ booking.product_name }}</h2><p>{{ booking.start_at|date:'j F Y' }} · {{ booking.guest_no }} tamu</p><small>Kode booking: <strong>{{ booking.code }}</strong></small></div><div class="history-action"><strong>{{ booking.total_price|idr }}</strong><a class="button button-outline" href="{% url 'invoice' booking.id %}">Lihat invoice</a></div></article>
+  {% endfor %}</div>{% else %}<div class="empty-state"><h2>Belum ada perjalanan</h2><p>Pilih paket dan buat booking demo pertama Anda.</p><a class="button button-primary" href="{% url 'catalog' %}">Lihat paket wisata</a></div>{% endif %}
+</div>
+{% endblock %}
