@@ -13,6 +13,12 @@ Credential-free POC is implemented locally. Catalogue, simulated login, regular/
 - Product amounts and fees remain separate. DP/PO is partial, never fully paid.
 - Browser returns trigger status reads and never settle payments.
 
+## Verification and review
+
+Independent review completed. Paid-intent revisits now redirect to the invoice, payment-completion deadlines block new intents while late provider settlement remains recordable, and seasonal fixtures follow an injectable demo clock. The final suite has 43 passing tests plus clean Ruff and Django checks. Chrome journeys pass for regular and seasonal partial→full payment; mobile and axe checks are clean. Compose config is valid, but image construction is unverified because the Docker daemon was unavailable.
+
+Deferred review polish: disable unavailable departure choices, add no-store headers to authenticated pages, improve seasonal radio-group semantics and error associations, and centralize fee/percentage presentation.
+
 ## Remaining work before a real integration
 
 Verify the exported API contract and payment-option/scheme gaps with the API owner; implement signed live transport and hosted OIDC; use PostgreSQL for concurrency acceptance; add verified webhooks and reconciliation; complete sandbox validation, deployment, licensing, and public-release review.
