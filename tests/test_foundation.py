@@ -33,3 +33,27 @@ def test_production_settings_reject_demo_mode():
 
     assert result.returncode != 0
     assert "Demo mode cannot be enabled in production" in result.stderr
+
+
+def test_sqlite_path_can_be_configured_for_persistent_demo_volume():
+    env = os.environ.copy()
+    env["DJANGO_SETTINGS_MODULE"] = "config.settings.demo"
+    env["SQLITE_NAME"] = "/tmp/onjourney-demo-volume.sqlite3"
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "manage.py",
+            "shell",
+            "-c",
+            "from django.conf import settings; print(settings.DATABASES['default']['NAME'])",
+        ],
+        cwd=Path(__file__).resolve().parent.parent,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0
+    assert result.stdout.strip().splitlines()[-1] == "/tmp/onjourney-demo-volume.sqlite3"
