@@ -12,7 +12,7 @@ from storefront.services import BookingService, PaymentService
 
 @pytest.fixture
 def booking():
-    return BookingService(client=DemoClient()).create_booking(
+    return BookingService(client=DemoClient(today=date(2026, 11, 12))).create_booking(
         subject="traveller-1",
         product_id=101,
         start_at=date(2027, 1, 15),
@@ -24,7 +24,7 @@ def booking():
 
 @pytest.mark.django_db
 def test_first_intent_pays_dp_with_one_vat_inclusive_fee(booking):
-    intent = PaymentService().create_intent(
+    intent = PaymentService(client=DemoClient(today=date(2026, 11, 12))).create_intent(
         booking=booking,
         installment_number=1,
         option_id=9001,
@@ -43,7 +43,7 @@ def test_first_intent_pays_dp_with_one_vat_inclusive_fee(booking):
 @pytest.mark.django_db
 def test_intent_cannot_skip_first_unpaid_term(booking):
     with pytest.raises(PaymentSequenceError):
-        PaymentService().create_intent(
+        PaymentService(client=DemoClient(today=date(2026, 11, 12))).create_intent(
             booking=booking,
             installment_number=2,
             option_id=9001,
@@ -54,13 +54,13 @@ def test_intent_cannot_skip_first_unpaid_term(booking):
 @pytest.mark.django_db
 def test_repeated_payment_operation_returns_original_intent(booking):
     operation_id = uuid4()
-    first = PaymentService().create_intent(
+    first = PaymentService(client=DemoClient(today=date(2026, 11, 12))).create_intent(
         booking=booking,
         installment_number=1,
         option_id=9001,
         operation_id=operation_id,
     )
-    second = PaymentService().create_intent(
+    second = PaymentService(client=DemoClient(today=date(2026, 11, 12))).create_intent(
         booking=booking,
         installment_number=1,
         option_id=9001,
@@ -73,13 +73,13 @@ def test_repeated_payment_operation_returns_original_intent(booking):
 
 @pytest.mark.django_db
 def test_new_operation_cannot_duplicate_active_term(booking):
-    first = PaymentService().create_intent(
+    first = PaymentService(client=DemoClient(today=date(2026, 11, 12))).create_intent(
         booking=booking,
         installment_number=1,
         option_id=9001,
         operation_id=uuid4(),
     )
-    second = PaymentService().create_intent(
+    second = PaymentService(client=DemoClient(today=date(2026, 11, 12))).create_intent(
         booking=booking,
         installment_number=1,
         option_id=9001,
@@ -93,7 +93,7 @@ def test_new_operation_cannot_duplicate_active_term(booking):
 @pytest.mark.django_db
 def test_unknown_payment_option_is_rejected(booking):
     with pytest.raises(BookingValidationError):
-        PaymentService().create_intent(
+        PaymentService(client=DemoClient(today=date(2026, 11, 12))).create_intent(
             booking=booking,
             installment_number=1,
             option_id=9999,
@@ -103,7 +103,7 @@ def test_unknown_payment_option_is_rejected(booking):
 
 @pytest.mark.django_db
 def test_settlement_moves_from_partial_to_fully_paid(booking):
-    service = PaymentService()
+    service = PaymentService(client=DemoClient(today=date(2026, 11, 12)))
     first = service.create_intent(
         booking=booking,
         installment_number=1,
@@ -133,7 +133,7 @@ def test_settlement_moves_from_partial_to_fully_paid(booking):
 
 @pytest.mark.django_db
 def test_status_recovery_reports_authoritative_amounts_and_timestamp(booking):
-    service = PaymentService()
+    service = PaymentService(client=DemoClient(today=date(2026, 11, 12)))
     intent = service.create_intent(
         booking=booking,
         installment_number=1,

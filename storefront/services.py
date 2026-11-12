@@ -110,6 +110,9 @@ class BookingService:
 
 
 class PaymentService:
+    def __init__(self, client):
+        self.client = client
+
     def create_intent(self, *, booking, installment_number, option_id, operation_id):
         existing_operation = PaymentIntent.objects.filter(operation_id=operation_id).first()
         if existing_operation is not None:
@@ -133,6 +136,14 @@ class PaymentService:
         ).first()
         if existing_term is not None:
             return existing_term
+
+        if booking.season_id is not None:
+            departure = self.client.get_departure(booking.product_id, booking.season_id)
+            if (
+                departure is None
+                or departure["payment_completion_deadline"] < timezone.localdate().isoformat()
+            ):
+                raise BookingValidationError("Batas waktu pelunasan telah berakhir.")
 
         amount = Decimal(next_term["amount"])
         return PaymentIntent.objects.create(

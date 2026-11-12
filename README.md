@@ -49,8 +49,10 @@ Open <http://127.0.0.1:8000>. The `demo_data` volume keeps the SQLite database a
 
 1. Open **Open Trip Labuan Bajo**.
 2. Choose a listed departure; its date, remaining seats, PO deadline, and completion deadline come from the demo adapter.
-3. Create the booking and pay **PO 30%**, then the **70%** balance in sequence.
+3. Create the booking and pay **PO 30%**, then the **70%** balance in sequence. New intents are blocked after the completion deadline; a provider settlement for an intent created before that deadline is still recorded.
 4. Use **Periksa status terbaru** to refresh the authoritative demo payment state and timestamp.
+
+Demo departures and deadlines are generated relative to the current date, so the walkthrough remains usable in future checkouts. Tests inject a fixed demo clock.
 
 **Perjalanan saya** lists only bookings created by the current demo subject on this installation. It is not a complete OnJourney history.
 

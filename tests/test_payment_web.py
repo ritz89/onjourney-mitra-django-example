@@ -12,7 +12,7 @@ from storefront.services import BookingService
 
 @pytest.fixture
 def booking():
-    return BookingService(client=DemoClient()).create_booking(
+    return BookingService(client=DemoClient(today=date(2026, 11, 12))).create_booking(
         subject="demo-traveller-1",
         product_id=101,
         start_at=date(2027, 1, 15),
@@ -41,7 +41,7 @@ def create_intent(client, booking, term=1):
 
 @pytest.mark.django_db
 def test_invoice_is_not_readable_by_another_subject(client, demo_user):
-    other = BookingService(client=DemoClient()).create_booking(
+    other = BookingService(client=DemoClient(today=date(2026, 11, 12))).create_booking(
         subject="another-traveller",
         product_id=101,
         start_at=date(2027, 1, 15),
@@ -147,7 +147,7 @@ def test_manual_status_recovery_sets_last_checked_timestamp(demo_user, booking):
 
 @pytest.mark.django_db
 def test_seasonal_po_journey_reaches_full_payment_sequentially(demo_user):
-    seasonal = BookingService(client=DemoClient()).create_booking(
+    seasonal = BookingService(client=DemoClient(today=date(2026, 11, 12))).create_booking(
         subject="demo-traveller-1",
         product_id=201,
         start_at=None,

@@ -1,10 +1,12 @@
+from datetime import date
+
 from django.contrib.staticfiles import finders
 
 from integrations.onjourney.adapters.demo import DemoClient
 
 
 def test_all_demo_product_illustrations_are_bundled_locally():
-    for product in DemoClient().list_products():
+    for product in DemoClient(today=date(2026, 11, 12)).list_products():
         assert finders.find(product["image"]) is not None
 
 

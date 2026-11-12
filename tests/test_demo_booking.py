@@ -12,7 +12,7 @@ from storefront.services import BookingService
 
 @pytest.fixture
 def client():
-    return DemoClient()
+    return DemoClient(today=date(2026, 11, 12))
 
 
 @pytest.fixture

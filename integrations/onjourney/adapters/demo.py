@@ -1,6 +1,8 @@
 from copy import deepcopy
+from datetime import timedelta
 
 from django.db.models import Sum
+from django.utils import timezone
 
 TENANT = {
     "slug": "nusantara-journeys",
@@ -97,39 +99,39 @@ PRODUCTS = [
     },
 ]
 
-DEPARTURES = {
+DEPARTURE_OFFSETS = {
     201: [
         {
             "id": 2001,
-            "tour_date": "2027-02-12",
+            "tour_date": 92,
             "capacity": 8,
-            "remaining": 8,
-            "po_deadline": "2027-01-20",
-            "payment_completion_deadline": "2027-02-01",
+            "po_deadline": 69,
+            "payment_completion_deadline": 81,
         },
         {
             "id": 2002,
-            "tour_date": "2027-03-19",
+            "tour_date": 127,
             "capacity": 2,
-            "remaining": 2,
-            "po_deadline": "2027-02-25",
-            "payment_completion_deadline": "2027-03-05",
+            "po_deadline": 105,
+            "payment_completion_deadline": 113,
         },
     ],
     202: [
         {
             "id": 2101,
-            "tour_date": "2027-04-09",
+            "tour_date": 148,
             "capacity": 10,
-            "remaining": 10,
-            "po_deadline": "2027-03-15",
-            "payment_completion_deadline": "2027-03-29",
+            "po_deadline": 123,
+            "payment_completion_deadline": 137,
         }
     ],
 }
 
 
 class DemoClient:
+    def __init__(self, today=None):
+        self.today = today or timezone.localdate()
+
     def get_tenant(self):
         return deepcopy(TENANT)
 
@@ -145,8 +147,17 @@ class DemoClient:
     def list_departures(self, product_id):
         from storefront.models import BookingReference
 
-        departures = deepcopy(DEPARTURES.get(product_id, []))
-        for departure in departures:
+        departures = []
+        for template in DEPARTURE_OFFSETS.get(product_id, []):
+            departure = {
+                "id": template["id"],
+                "capacity": template["capacity"],
+                "remaining": template["capacity"],
+            }
+            for field in ("tour_date", "po_deadline", "payment_completion_deadline"):
+                departure[field] = (
+                    self.today + timedelta(days=template[field])
+                ).isoformat()
             reserved = (
                 BookingReference.objects.filter(
                     product_id=product_id,
@@ -155,6 +166,7 @@ class DemoClient:
                 or 0
             )
             departure["remaining"] = max(0, departure["remaining"] - reserved)
+            departures.append(departure)
         return departures
 
     def get_departure(self, product_id, season_id):

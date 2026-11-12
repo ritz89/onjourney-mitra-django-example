@@ -190,7 +190,7 @@ def payment_intent_create(request, booking_id):
     except (KeyError, TypeError, ValueError):
         return HttpResponseBadRequest("Data pembayaran tidak lengkap atau tidak valid.")
     try:
-        intent = PaymentService().create_intent(
+        intent = PaymentService(client=DemoClient()).create_intent(
             booking=booking,
             installment_number=installment_number,
             option_id=option_id,
@@ -206,6 +206,8 @@ def payment_pending(request, intent_id):
     if _subject(request) is None:
         return _login_redirect(request)
     intent = _owned_intent_or_404(request, intent_id)
+    if intent.status == "paid":
+        return redirect("invoice", booking_id=intent.booking_id)
     return render(request, "storefront/payment_pending.html", {"intent": intent})
 
 
@@ -225,7 +227,7 @@ def demo_payment_settle(request, intent_id):
     if _subject(request) is None:
         return _login_redirect(request)
     intent = _owned_intent_or_404(request, intent_id)
-    PaymentService().settle_intent(intent)
+    PaymentService(client=DemoClient()).settle_intent(intent)
     return redirect("payment_return", intent_id=intent.id)
 
 
@@ -233,7 +235,7 @@ def payment_return(request, intent_id):
     if _subject(request) is None:
         return _login_redirect(request)
     intent = _owned_intent_or_404(request, intent_id)
-    PaymentService().get_status(intent.booking)
+    PaymentService(client=DemoClient()).get_status(intent.booking)
     return redirect("invoice", booking_id=intent.booking_id)
 
 
@@ -242,6 +244,6 @@ def payment_status(request, booking_id):
     if _subject(request) is None:
         return _login_redirect(request)
     booking = _owned_booking_or_404(request, booking_id)
-    PaymentService().get_status(booking)
+    PaymentService(client=DemoClient()).get_status(booking)
     messages.success(request, "Status pembayaran terbaru sudah diperiksa.")
     return redirect("invoice", booking_id=booking.id)
