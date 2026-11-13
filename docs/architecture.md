@@ -6,6 +6,8 @@ The browser talks only to the Django backend-for-frontend. Django views call app
 
 The POC covers catalogue → simulated sign-in → booking → invoice → sequential payment → authoritative status recovery. Local booking references are bound to a demo traveller subject. Stable operation IDs protect booking and payment creation from repeated submissions.
 
+See `integration-flow.md` for component and sequence diagrams covering the current demo and the target live integration.
+
 ## Boundaries
 
 - SQLite and simulated sign-in are demo-only.
