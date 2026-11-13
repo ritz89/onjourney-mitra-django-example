@@ -2,7 +2,7 @@
 
 A credential-free proof of concept for a **Mitra-owned traveller storefront** using the shape of the OnJourney External Tenant API. The sample partner is the fictional **Nusantara Journeys**.
 
-This is a vertical slice of the [delivery plan](../docs/superpowers/plans/2026-11-10-mitra-external-api-django-template.md), not the completed public integration template. It demonstrates:
+This is a vertical slice of the OnJourney Mitra External API delivery plan, not the completed public integration template. It demonstrates:
 
 - Partner-branded catalogue with regular and seasonal products.
 - Departure quota, PO deadline, and payment-completion deadline.
@@ -30,7 +30,7 @@ Open <http://127.0.0.1:8000>. The persistent banner confirms that every record a
 docker compose up --build
 ```
 
-Open <http://127.0.0.1:8000>. The `demo_data` volume keeps the SQLite database across container recreation. Stop with `docker compose down`; remove that volume only when intentionally resetting demo data.
+Open <http://127.0.0.1:8000>. Compose binds only to localhost and the container runs as an unprivileged user. The `demo_data` volume keeps the SQLite database across container recreation. Stop with `docker compose down`; remove that volume only when intentionally resetting demo data. The development server and shared identity are for local demonstration only.
 
 ## Guided demo
 
@@ -86,6 +86,10 @@ Change partner copy, colours, products, and departures in `integrations/onjourne
 - No real payment-option discovery or claim of deployed API compatibility.
 - SQLite and the demo provider are not production concurrency or security models.
 - Production settings reject demo mode, but this POC is not production-ready.
-- Repository ownership, license, public release, test-tenant validation, and deployment remain release decisions.
+- Test-tenant validation and deployment remain release decisions.
 
 See `docs/architecture.md` and `docs/api-coverage.md` before starting a live adapter.
+
+## License
+
+Code is available under the MIT License. The license does not grant OnJourney trademark rights, hosted API access, payment-provider access, or production credentials.

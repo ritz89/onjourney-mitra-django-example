@@ -31,7 +31,8 @@ def _login_redirect(request):
 
 
 def health(request):
-    return JsonResponse({"status": "ok", "mode": "demo"})
+    mode = "demo" if settings.ONJOURNEY_DEMO_MODE else "disabled"
+    return JsonResponse({"status": "ok", "mode": mode})
 
 
 def catalog(request):

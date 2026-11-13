@@ -15,12 +15,12 @@ Credential-free POC is implemented locally. Catalogue, simulated login, regular/
 
 ## Verification and review
 
-Independent review completed. Paid-intent revisits now redirect to the invoice, payment-completion deadlines block new intents while late provider settlement remains recordable, and seasonal fixtures follow an injectable demo clock. The final suite has 43 passing tests plus clean Ruff and Django checks. Chrome journeys pass for regular and seasonal partial→full payment; mobile and axe checks are clean. Compose config is valid, but image construction is unverified because the Docker daemon was unavailable.
+Independent implementation and security reviews completed. Paid-intent revisits now redirect to the invoice, payment-completion deadlines block new intents while late provider settlement remains recordable, and seasonal fixtures follow an injectable demo clock. Production mode closes the demo storefront, authenticated paths use no-store cache headers, Compose is localhost-only, and the container uses an unprivileged user. The final suite has 48 passing tests plus clean Ruff, Django deployment, and Compose checks. Chrome journeys pass for regular and seasonal partial→full payment; mobile and axe checks are clean. Image construction remains unverified because the Docker daemon was unavailable.
 
-Deferred review polish: disable unavailable departure choices, add no-store headers to authenticated pages, improve seasonal radio-group semantics and error associations, and centralize fee/percentage presentation.
+Deferred polish: disable unavailable departure choices, improve seasonal radio-group semantics and error associations, and centralize fee/percentage presentation.
 
 ## Remaining work before a real integration
 
-Verify the exported API contract and payment-option/scheme gaps with the API owner; implement signed live transport and hosted OIDC; use PostgreSQL for concurrency acceptance; add verified webhooks and reconciliation; complete sandbox validation, deployment, licensing, and public-release review.
+Verify the exported API contract and payment-option/scheme gaps with the API owner; implement signed live transport and hosted OIDC; use PostgreSQL for concurrency acceptance; add verified webhooks and reconciliation; and complete sandbox validation and deployment. The code is MIT licensed; trademark and hosted API rights are not included.
 
-The source plan is `/Users/macbook/projects/onjourney/docs/superpowers/plans/2026-11-10-mitra-external-api-django-template.md`. Do not edit that plan during implementation.
+The public planning context is summarized in `docs/architecture.md` and `docs/api-coverage.md`; no workspace-local files are required to use this repository.

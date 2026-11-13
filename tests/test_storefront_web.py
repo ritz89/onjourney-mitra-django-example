@@ -1,8 +1,11 @@
+from datetime import date
+from unittest.mock import patch
 from uuid import uuid4
 
 import pytest
 from django.urls import reverse
 
+from integrations.onjourney.adapters.demo import DemoClient
 from storefront.models import BookingReference
 
 
@@ -28,7 +31,11 @@ def test_catalog_uses_partner_brand_and_product_cards(client):
 
 @pytest.mark.django_db
 def test_seasonal_detail_shows_real_departure_fields(client):
-    response = client.get(reverse("product_detail", args=[201]))
+    with patch(
+        "storefront.views.DemoClient",
+        side_effect=lambda: DemoClient(today=date(2026, 11, 12)),
+    ):
+        response = client.get(reverse("product_detail", args=[201]))
 
     assert response.status_code == 200
     content = response.content.decode()
@@ -117,14 +124,18 @@ def test_double_booking_submission_creates_one_record(demo_user):
 
 @pytest.mark.django_db
 def test_seasonal_booking_submission_uses_departure(demo_user):
-    response = demo_user.post(
-        reverse("booking_create", args=[201]),
-        {
-            "season_id": "2001",
-            "guest_no": "2",
-            "operation_id": str(uuid4()),
-        },
-    )
+    with patch(
+        "storefront.views.DemoClient",
+        side_effect=lambda: DemoClient(today=date(2026, 11, 12)),
+    ):
+        response = demo_user.post(
+            reverse("booking_create", args=[201]),
+            {
+                "season_id": "2001",
+                "guest_no": "2",
+                "operation_id": str(uuid4()),
+            },
+        )
 
     booking = BookingReference.objects.get()
     assert response.status_code == 302
