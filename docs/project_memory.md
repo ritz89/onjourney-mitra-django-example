@@ -23,4 +23,4 @@ Deferred polish: disable unavailable departure choices, improve seasonal radio-g
 
 Verify the exported API contract and payment-option/scheme gaps with the API owner; implement signed live transport and hosted OIDC; use PostgreSQL for concurrency acceptance; add verified webhooks and reconciliation; and complete sandbox validation and deployment. The code is MIT licensed; trademark and hosted API rights are not included.
 
-The public planning context is summarized in `docs/architecture.md` and `docs/api-coverage.md`; no workspace-local files are required to use this repository.
+The public planning context is summarized in `docs/architecture.md` and `docs/api-coverage.md`. Current and target integration flows, including Mermaid sequence diagrams for hosted authentication, booking, payment, webhooks, and recovery, are documented in `docs/integration-flow.md`. No workspace-local files are required to use this repository.

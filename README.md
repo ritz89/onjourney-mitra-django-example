@@ -66,6 +66,12 @@ uv run python manage.py check
 
 The suite covers catalogue rendering, session safety, return-URL validation, regular/seasonal booking, quota and ownership boundaries, idempotent writes, DP-first sequencing, fee calculations, partial/full settlement, forged browser returns, and local assets.
 
+## Architecture documentation
+
+- `docs/architecture.md`: POC components and integration boundaries.
+- `docs/integration-flow.md`: Current and target architectures, Mermaid sequence diagrams, authentication, booking, payment, reconciliation, recovery, and failure handling.
+- `docs/api-coverage.md`: Demo capabilities and explicit live-integration gaps.
+
 ## Project map
 
 ```text
